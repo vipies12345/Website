@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MatView – Home</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6f9;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo img {
+      height: 50px;
+    }
+
+    .nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #004080;
+      font-weight: 600;
+    }
+
+    .nav a:hover {
+      color: #007BFF;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #004080, #007BFF);
+      color: white;
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    .hero p {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .image-grid img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .image-grid img:hover {
+      transform: scale(1.05);
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 60px auto;
+      gap: 30px;
+      padding: 0 20px;
+    }
+
+    .feature {
+      flex: 1 1 260px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .feature h3 {
+      color: #004080;
+      margin-bottom: 12px;
+    }
+
+    .feature p {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      background: #002244;
+      color: #fff;
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 0.9rem;
+      margin-top: 60px;
+    }
+
+    @media(max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .features {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header with Logo -->
+  <header>
+    <div class="logo">
+      <img src="images/logo.png" alt="MatView Logo">
+    </div>
+    <nav class="nav">
+    <a href="home.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="products.html">Products</a>
+    <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Experience Innovation with MatView</h1>
+    <p>Leading manufacturer of MATLAB‑based & LabVIEW‑based HIL systems for engineering labs and research.</p>
+  </section>
+
+  <!-- Four Image Showcase -->
+  <section class="image-grid">
+    <img src="images/img1.jpg" alt="Wind Emulator">
+    <img src="images/img2.jpg" alt="Solar Array Simulator">
+    <img src="images/img3.jpg" alt="Grid Simulator">
+    <img src="images/img4.jpg" alt="Programmable Load">
+  </section>
+
+  <!-- Features Section -->
+  <div class="features">
+    <div class="feature">
+      <h3>Innovation at its Finest</h3>
+      <p>Cutting-edge simulation tools designed for education and research excellence.</p>
+    </div>
+    <div class="feature">
+      <h3>Engineering Lab Equipment</h3>
+      <p>Wind Emulators, Solar Simulators, Grid Simulators, programmable loads & analyzers.</p>
+    </div>
+    <div class="feature">
+      <h3>MATLAB & LabVIEW Ecosystem</h3>
+      <p>Fully compatible with MATLAB‑based and LabVIEW‑based HIL systems.</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 MatView Private Limited. All Rights Reserved.
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Products | MatView</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f5f6fa;
+      color: #333;
+    }
+    header {
+      background: #fff;
+      padding: 20px 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo a {
+      text-decoration: none;
+      font-size: 1.4rem;
+      color: #004080;
+      font-weight: 600;
+    }
+    nav a {
+      margin-left: 25px;
+      color: #004080;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    nav a:hover { color: #007bff; }
+    .hero {
+      background: linear-gradient(135deg, #004080, #007BFF);
+      color: #fff;
+      text-align: center;
+      padding: 100px 20px;
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 3rem;
+      letter-spacing: 1px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+    }
+    .card img {
+
+ width: 100%;
+  height: 200px; /* adjust based on your layout */
+  object-fit: contain;
+  display: block;
+  background-color: #fff; /* optional: background if images have transparency */      
+
+    }
+    .card-content {
+      padding: 20px;
+    }
+    .card-content h3 {
+      margin: 0 0 12px;
+      color: #004080;
+      font-size: 1.25rem;
+    }
+    .card-content p {
+      margin: 0 0 16px;
+      line-height: 1.5;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .card-content a {
+      color: #007BFF;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .card-content a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      background: #002244;
+      color: #fff;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 60px;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo"><a href="index.html">MatView</a></div>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="products.html">Products</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Our Products</h1>
+    <p>Explore cutting-edge tools like Wind Emulators, Solar Simulators, Power Supplies, and more.</p>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <img src="pd/rlc.jpg" alt="RLC Load">
+      <div class="card-content">
+        <h3>RLC Load System</h3>
+        <p>Comprehensive R‑L‑C load testing solution for UPS, inverters, transformers and PV systems. Simulates real-world conditions for predictive failure analysis.</p>
+        <a href="#">Learn More</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="pd/bds.jpg" alt="Battery Charger Discharger">
+      <div class="card-content">
+        <h3>Battery Charger‑Discharger (CDS)</h3>
+        <p>Advanced battery charging/discharging unit with precise monitoring and control – ideal for lab‑grade testing of lithium-ion and lead‑acid batteries.</p>
+        <a href="#">Learn More</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="pd/retms.jpg" alt="RETMS">
+      <div class="card-content">
+        <h3>RETMS – Renewable Energy Training & Management System</h3>
+        <p>Integrated platform covering solar PV & wind simulation, weather data, control unit and load analysis. Ideal for education and research labs.</p>
+        <a href="#">Learn More</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="pd/ps.jpg" alt="DC/AC Power Supply">
+      <div class="card-content">
+        <h3>DC / AC Power Supply</h3>
+        <p>Variable precision DC/AC power source with adjustable voltage/current output. Suitable for testing circuits and devices under controlled conditions.</p>
+        <a href="#">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 MatView Private Limited. All Rights Reserved.
+  </footer>
+
+</body>
+</html>
+F
