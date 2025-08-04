@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mat View | Smart EV Charger</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #e0f7fa, #c8e6c9);
+      text-align: center;
+      color: #333;
+      padding-top: 150px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #e6f0ff;
+      padding: 12px 0;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      z-index: 1000;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 50px;
+      width: 100%;
+      z-index: 999;
+    }
+
+    .logo {
+      width: 80px;
+      margin-right: 15px;
+    }
+
+    .text-group {
+      text-align: left;
+    }
+
+    .background-logo {
+      position: absolute;
+      top: -20px;
+      left: 30px;
+      width: 110px;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    .title {
+      font-size: 32px;
+      color: #111c4e;
+      font-weight: bold;
+    }
+
+    .tagline {
+      font-size: 18px;
+      color: #8a3c48;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-top: 20px;
+    }
+
+    img {
+      width: 300px;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    .status, .data {
+      font-size: 1.4em;
+      margin: 15px auto;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      width: fit-content;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .charging-bar {
+      width: 300px;
+      height: 20px;
+      margin: 20px auto;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .charging-fill {
+      height: 100%;
+      width: 0%;
+      background-color: #4caf50;
+      border-radius: 10px;
+    }
+
+    .led {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-top: 10px;
+      border-radius: 50%;
+      background-color: red;
+    }
+
+    .led.blinking {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .charging-status-text {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .blink {
+      animation: blinkText 1s infinite;
+    }
+
+    @keyframes blinkText {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 12px 25px;
+      font-size: 1em;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      background-color: #c0392b;
+    }
+
+    footer {
+      margin-top: 60px;
+      font-size: 14px;
+      color: #777;
+      padding: 20px 0;
+      border-top: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="images/logo.png" class="logo" alt="Logo">
+    <div class="text-group">
+      <img src="images/logo.png" class="background-logo" alt="Faint Logo">
+      <div class="title">Mat View</div>
+      <div class="tagline">Innovate & Educate</div>
+    </div>
+  </div>
+
+  <h1>Smart EV Charger Panel</h1>
+  <div class="status" id="statusText">Checking charger status...</div>
+  <div id="imageBox">
+    <img id="statusImage" src="not connected.png" alt="Charger Status">
+  </div>
+
+  <div id="chargingUI" style="display: none;">
+    <div class="data">Units: <span id="voltage">--</span> kWhr</div>
+    <div class="data">Price: <span id="current">--</span> ₹ </div>
+
+    <div class="charging-bar">
+      <div class="charging-fill" id="chargingFill"></div>
+    </div>
+
+    <div class="led" id="ledIndicator"></div><br>
+    <div class="charging-status-text" id="chargingStatusText"></div>
+    <button id="toggleButton" onclick="toggleCharging()">Start Charging</button>
+  </div>
+
+  <script>
+    const readDataURL = "https://voltage-current-and-relay-default-rtdb.firebaseio.com/data.json";
+    const relayControlURL = "https://relay-status-84383-default-rtdb.firebaseio.com/data.json";
+
+    let isCharging = false;
+    let chargerConnected = false;
+    let fill, led, button, chargingStatusText, chargingInterval;
+
+    async function readChargingData() {
+      try {
+        const res = await fetch(readDataURL);
+        const data = await res.json();
+        document.getElementById("voltage").textContent = data[0];
+        document.getElementById("current").textContent = data[1];
+      } catch (err) {
+        console.error("Read error:", err);
+      }
+    }
+
+    async function sendRelayStatus(status) {
+      try {
+        await fetch(relayControlURL, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(status)
+        });
+      } catch (err) {
+        console.error("Relay error:", err);
+      }
+    }
+
+    function animateBar() {
+      let percent = 0;
+      clearInterval(chargingInterval);
+      chargingInterval = setInterval(() => {
+        if (!isCharging) return;
+        if (percent >= 100) {
+          percent = 0;
+          fill.style.width = "0%";
+        } else {
+          percent += 1;
+          fill.style.width = percent + "%";
+        }
+      }, 50);
+    }
+
+    function startCharging() {
+      if (!chargerConnected) return alert("⚠️ Charger not connected.");
+      isCharging = true;
+      button.textContent = "Stop Charging";
+      led.style.backgroundColor = "green";
+      led.classList.add("blinking");
+      chargingStatusText.textContent = "Charging Started ✅";
+      chargingStatusText.classList.remove("blink");
+      sendRelayStatus(1);
+      animateBar();
+    }
+
+    function stopCharging() {
+      isCharging = false;
+      button.textContent = "Start Charging";
+      led.style.backgroundColor = "red";
+      led.classList.remove("blinking");
+      chargingStatusText.textContent = "Charging Stopped ❌";
+      chargingStatusText.classList.add("blink");
+      clearInterval(chargingInterval);
+      fill.style.width = "0%";
+      sendRelayStatus(0);
+    }
+
+    function toggleCharging() {
+      if (!chargerConnected) return alert("⚠️ Please connect the charger first.");
+      if (isCharging) stopCharging();
+      else startCharging();
+    }
+
+    async function checkChargerStatus() {
+      try {
+        const res = await fetch(readDataURL);
+        const data = await res.json();
+        const status = data[2];
+
+        if (status === "1.00") {
+          chargerConnected = true;
+          document.getElementById("statusText").textContent = "✅ Charger Connected!";
+          document.getElementById("statusImage").src = "connected.jpg";
+          document.getElementById("chargingUI").style.display = "block";
+        } else {
+          chargerConnected = false;
+          document.getElementById("statusText").textContent = "⚠️ Charger Not Connected!";
+          document.getElementById("statusImage").src = "not connected.png";
+          document.getElementById("chargingUI").style.display = "none";
+          stopCharging();
+        }
+      } catch (err) {
+        document.getElementById("statusText").textContent = "❌ Error reading charger status!";
+        console.error(err);
+      }
+    }
+
+    window.onload = () => {
+      fill = document.getElementById("chargingFill");
+      led = document.getElementById("ledIndicator");
+      button = document.getElementById("toggleButton");
+      chargingStatusText = document.getElementById("chargingStatusText");
+
+      checkChargerStatus();
+      readChargingData();
+
+      setInterval(() => {
+        checkChargerStatus();
+        if (isCharging) {
+          readChargingData();
+          sendRelayStatus(1);
+        }
+      }, 3000);
+    };
+  </script>
+
+  <footer>
+    @ All rights reserved | Powered by MatView Private Limited
+  </footer>
+</body>
+</html>
