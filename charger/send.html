@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send Data to Firebase</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fa;
+      padding: 40px;
+      text-align: center;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+    .form-box {
+      background: #fff;
+      padding: 20px;
+      margin: auto;
+      width: 350px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      padding: 8px;
+      width: 90%;
+      margin: 10px 0;
+      font-size: 1em;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #2980b9;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    button:hover {
+      background-color: #1c5980;
+    }
+    .success {
+      margin-top: 10px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Send Data to Firebase</h2>
+  <div class="form-box">
+    <input type="text" id="voltage" placeholder="Voltage (e.g., 5.0)" /><br>
+    <input type="text" id="current" placeholder="Current (e.g., 1.0)" /><br>
+    <input type="text" id="relay" placeholder="Relay Status (e.g., 1 or 0)" /><br>
+    <button onclick="sendData()">Send</button>
+    <div class="success" id="status"></div>
+  </div>
+
+  <script>
+    const firebaseURL = "https://voltage-current-and-relay-default-rtdb.firebaseio.com/data.json";
+
+    async function sendData() {
+      const voltage = document.getElementById("voltage").value;
+      const current = document.getElementById("current").value;
+      const relay   = document.getElementById("relay").value;
+
+      const dataArray = [voltage, current, relay];
+
+      try {
+        const response = await fetch(firebaseURL, {
+          method: "PUT", // Use PUT to overwrite the "data" node
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(dataArray)
+        });
+
+        if (response.ok) {
+          document.getElementById("status").textContent = "✅ Data sent successfully!";
+        } else {
+          document.getElementById("status").textContent = "❌ Failed to send data.";
+        }
+
+      } catch (error) {
+        console.error("Error sending data:", error);
+        document.getElementById("status").textContent = "❌ Error occurred.";
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EV Charging Control</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #d4fc79, #96e6a1);
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #2c3e50;
+    }
+
+    img {
+      width: 300px;
+      border-radius: 12px;
+      margin-top: 20px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.2);
+    }
+
+    .data {
+      font-size: 1.4em;
+      margin: 15px auto;
+      color: #333;
+    }
+
+    .charging-bar {
+      width: 300px;
+      height: 20px;
+      margin: 20px auto;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .charging-fill {
+      height: 100%;
+      width: 0%;
+      background-color: #27ae60;
+      border-radius: 10px;
+    }
+
+    .led {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-top: 10px;
+      border-radius: 50%;
+      background-color: red;
+    }
+
+    .led.blinking {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 12px 25px;
+      font-size: 1em;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Charging Control Panel</h1>
+
+  <img src="connected.png" alt="Charging Vehicle">
+
+  <div class="data">Voltage: <span id="voltage">--</span> Volts</div>
+  <div class="data">Current: <span id="current">--</span> Amps</div>
+
+  <div class="charging-bar">
+    <div class="charging-fill" id="chargingFill"></div>
+  </div>
+
+  <div class="led" id="ledIndicator"></div>
+
+  <br>
+  <button id="toggleButton" onclick="toggleCharging()">Stop Charging</button>
+
+  <script>
+    const readDataURL = "https://voltage-current-and-relay-default-rtdb.firebaseio.com/data.json";
+    const relayControlURL = "https://relay-status-84383-default-rtdb.firebaseio.com/data.json";
+
+    let isCharging = true;
+    let chargingInterval;
+    let fill = document.getElementById("chargingFill");
+    let led = document.getElementById("ledIndicator");
+    let button = document.getElementById("toggleButton");
+
+    async function readChargingData() {
+      try {
+        const res = await fetch(readDataURL);
+        const data = await res.json();
+        document.getElementById('voltage').textContent = data[0];
+        document.getElementById('current').textContent = data[1];
+      } catch (err) {
+        console.error("Read error:", err);
+      }
+    }
+
+    async function sendRelayStatus(status) {
+      try {
+        await fetch(relayControlURL, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(status)
+        });
+      } catch (err) {
+        console.error("Relay status error:", err);
+      }
+    }
+
+    function startCharging() {
+      isCharging = true;
+      button.textContent = "Stop Charging";
+      led.style.backgroundColor = "green";
+      led.classList.add("blinking");
+      sendRelayStatus(1);
+      animateBar();
+    }
+
+    function stopCharging() {
+      isCharging = false;
+      button.textContent = "Start Charging";
+      led.style.backgroundColor = "red";
+      led.classList.remove("blinking");
+      clearInterval(chargingInterval);
+      fill.style.width = "0%";
+      sendRelayStatus(0);
+      setTimeout(() => window.location.href = "index.html", 2000);
+    }
+
+    function toggleCharging() {
+      if (isCharging) {
+        stopCharging();
+      } else {
+        startCharging();
+      }
+    }
+
+    function animateBar() {
+      let percent = 0;
+      chargingInterval = setInterval(() => {
+        if (!isCharging) return;
+        if (percent >= 100) {
+          percent = 0;
+          fill.style.width = "0%";
+        } else {
+          percent += 1;
+          fill.style.width = percent + "%";
+        }
+      }, 50); // Slow fill
+    }
+
+    // Start everything on load
+    window.onload = () => {
+      startCharging();
+      readChargingData();
+      setInterval(() => {
+        if (isCharging) {
+          readChargingData();
+          sendRelayStatus(1);
+        }
+      }, 3000);
+    };
+  </script>
+
+</body>
+</html>
