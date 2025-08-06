@@ -280,7 +280,7 @@
         const data = await res.json();
         const status = data[2];
 
-        if (status === "1.00") {
+        if (status === "1") {
           chargerConnected = true;
           document.getElementById("statusText").textContent = "✅ Charger Connected!";
           document.getElementById("statusImage").src = "connected.jpg";
@@ -319,6 +319,7 @@
 
   <footer>
     @ All rights reserved | Powered by MatView Private Limited
+     <a href="send.html"> Connect the Charger</a>
   </footer>
 </body>
 </html>
